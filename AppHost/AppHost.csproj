@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsAspireHost>true</IsAspireHost>
+    <UserSecretsId>5717e08e-d37e-45ce-ade7-42bf25464ea6</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="8.0.1" />
+    <PackageReference Include="Aspire.Hosting.SqlServer" Version="8.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ChangePublisher\ChangePublisher.csproj" />
+    <ProjectReference Include="..\GlobalInventory\GlobalInventory.csproj" />
+    <ProjectReference Include="..\LocalInventory.MigrationService\LocalInventory.MigrationService.csproj" />
+    <ProjectReference Include="..\LocalInventory.Api\LocalInventory.Api.csproj" />
+    <ProjectReference Include="..\Mapper\Mapper.csproj" />
+  </ItemGroup>
+
+</Project>
