@@ -1,4 +1,5 @@
 ﻿using LocalInventory.Api.Data;
+using LocalInventory.Api.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,7 +15,11 @@ public class InventoryController(InventoryDbContext context) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<InventoryItem>>> GetInventory()
     {
-        return await _context.Inventory.ToListAsync();
+        return await _context.Inventory
+            .Include(x => x.Product)
+            .Include(x => x.Location)
+                .ThenInclude(x => x.Parent)
+            .ToListAsync();
     }
 
     // GET: api/Inventory/5
@@ -29,7 +34,7 @@ public class InventoryController(InventoryDbContext context) : ControllerBase
     // PUT: api/Inventory/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutInventoryItem(int id, InventoryItem inventoryItem)
+    public async Task<IActionResult> PutInventoryItem(int id, UpdateInventoryItemDto inventoryItem)
     {
         if (id != inventoryItem.Id)
         {
@@ -60,12 +65,19 @@ public class InventoryController(InventoryDbContext context) : ControllerBase
     // POST: api/Inventory
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public async Task<ActionResult<InventoryItem>> PostInventoryItem(InventoryItem inventoryItem)
+    public async Task<ActionResult<InventoryItem>> PostInventoryItem(InventoryItemDto inventoryItem)
     {
-        _context.Inventory.Add(inventoryItem);
+        var item = new InventoryItem
+        {
+            ProductId = inventoryItem.ProductId,
+            LocationId = inventoryItem.LocationId,
+            Quantity = inventoryItem.Quantity
+        };
+
+        _context.Inventory.Add(item);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction("GetInventoryItem", new { id = inventoryItem.Id }, inventoryItem);
+        return CreatedAtAction("GetInventoryItem", new { id = item.Id }, inventoryItem);
     }
 
     // DELETE: api/Inventory/5
